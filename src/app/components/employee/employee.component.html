@@ -1,0 +1,39 @@
+<mat-card class="m-4">
+  <mat-card-header>
+    <button mat-raised-button (click)="addEmployee()">ADD</button>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-table [dataSource]="dataSource" class="mt-4">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.name }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="doj">
+        <mat-header-cell *matHeaderCellDef> Date of Join </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.doj }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <mat-header-cell *matHeaderCellDef> Role </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.role }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="salary">
+        <mat-header-cell *matHeaderCellDef> Salary </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.salary | currency }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <button mat-button (click)="editEmployee(row)">EDIT</button>
+          <button mat-button (click)="deleteEmployee(row.id)">DELETE</button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>
