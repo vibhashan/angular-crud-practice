@@ -1,25 +1,11 @@
 {
   "employees": [
     {
-      "id": "2",
-      "name": "sdsd",
-      "doj": "2025-01-24T14:35:10.208Z",
+      "name": "KKKKKKK",
+      "doj": "2025-01-25T16:41:48.456Z",
       "role": "Operator",
-      "salary": 3433
-    },
-    {
-      "id": "3",
-      "name": "sdsd",
-      "doj": "2025-01-24T14:35:10.208Z",
-      "role": "Operator",
-      "salary": 3433
-    },
-    {
-      "id": "4",
-      "name": "sdsd",
-      "doj": "2025-01-24T14:35:10.208Z",
-      "role": "Operator",
-      "salary": 3433
+      "salary": 43,
+      "id": "1"
     }
   ]
 }

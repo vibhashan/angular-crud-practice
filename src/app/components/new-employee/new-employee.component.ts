@@ -22,6 +22,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import Employee from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
+import { Store } from '@ngrx/store';
+import employeeActions from '../../store/actions.store';
 
 @Component({
   selector: 'app-new-employee',
@@ -49,9 +51,10 @@ export class NewEmployeeComponent implements OnInit, OnDestroy {
     private readonly matDialogRef: MatDialogRef<NewEmployeeComponent>,
     private readonly empService: EmployeeService,
     private readonly toasterService: ToastrService,
-    @Inject(MAT_DIALOG_DATA) private readonly matDialogData: any
+    @Inject(MAT_DIALOG_DATA) private readonly matDialogData: any,
+    private readonly store: Store
   ) {
-    this.title = matDialogData ? 'Edit Employee' : 'New Employee';
+    this.title = this.matDialogData.employee ? 'Edit Employee' : 'New Employee';
     this.formGroup = new FormGroup({
       name: new FormControl('', Validators.required),
       doj: new FormControl(new Date(), Validators.required),
@@ -63,8 +66,10 @@ export class NewEmployeeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const { name, doj, role, salary } = this.matDialogData.employee;
-    this.formGroup.setValue({ name, doj, role, salary });
+    if (this.matDialogData.employee) {
+      const { name, doj, role, salary } = this.matDialogData.employee;
+      this.formGroup.setValue({ name, doj, role, salary });
+    }
   }
 
   ngOnDestroy() {
@@ -81,23 +86,25 @@ export class NewEmployeeComponent implements OnInit, OnDestroy {
             employees.length > 0 ? employees[employees.length - 1].id : '0';
 
           if (this.matDialogData) {
-            this.subscription.add(
-              this.empService
-                .update({ ...employee, id: this.matDialogData.employee.id })
-                .subscribe(() => {
-                  this.toasterService.success('Employee updated successfully');
-                  this.closeDialog();
-                })
+            this.store.dispatch(
+              employeeActions.updateEmployee({
+                employee: {
+                  ...employee,
+                  id: this.matDialogData.employee.id,
+                },
+              })
             );
+            this.closeDialog();
           } else {
-            this.subscription.add(
-              this.empService
-                .add({ ...employee, id: (Number(lastId) + 1).toString() })
-                .subscribe(() => {
-                  this.toasterService.success('Employee added successfully');
-                  this.closeDialog();
-                })
+            this.store.dispatch(
+              employeeActions.createEmployee({
+                employee: {
+                  ...employee,
+                  id: (Number(lastId) + 1).toString(),
+                },
+              })
             );
+            this.closeDialog();
           }
         })
       );

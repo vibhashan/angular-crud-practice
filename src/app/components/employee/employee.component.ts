@@ -9,10 +9,13 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import Employee from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
+import employeeActions from '../../store/actions.store';
+import employeeListSelector from '../../store/selector.store';
 import { NewEmployeeComponent } from '../new-employee/new-employee.component';
 
 @Component({
@@ -34,6 +37,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly matDialog: MatDialog,
+    private readonly store: Store,
     private readonly empService: EmployeeService
   ) {
     this.displayedColumns = ['name', 'doj', 'role', 'salary', 'actions'];
@@ -42,8 +46,9 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.store.dispatch(employeeActions.getEmployees());
     this.subscription.add(
-      this.empService.getAll().subscribe((employees) => {
+      this.store.select(employeeListSelector).subscribe((employees) => {
         this.employees.set(employees);
         this.dataSource = this.employees();
       })
@@ -64,7 +69,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
   deleteEmployee(id: string) {
     if (confirm('Are you sure you want to delete this employee?')) {
-      this.subscription.add(this.empService.delete(id.toString()).subscribe());
+      this.store.dispatch(employeeActions.deleteEmployee({ id }));
     }
   }
 
